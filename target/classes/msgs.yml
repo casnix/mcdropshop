@@ -1,0 +1,17 @@
+lines:
+  left-arrow: '&a���'
+  right-arrow: '&a���'
+  cost: '&e{cost}&6��?'
+  amount: '{amount}'
+  buy: '&a&l[Buy]'
+  sell: '&d&l[Sell]'
+messages:
+  item-info: '&9Item: &e[&7{item}&e]&9, Cost: &2${cost}&9, Amount: &f{amount}'
+  bought-item: '&aBought item &e[{item}&e] &afor &2${cost}'
+  sold-item: '&dSold item &e[{item}&e] &dfor &2${cost}'
+  no-permission-buy: '&cYou dont have permision to buy from this shop!'
+  no-permission-sell: '&cYou dont have permision to sell to this shop!'
+  no-items: '&cThis shop has no items added to it!'
+  not-enough-items: '&cYou dont have enough of that item to sell!'
+  not-enough-money: '&cYou dont have enough money to purchase this item!'
+  not-enough-space: '&cYou dont have enough space in your inventory to hold all of the items! Please clear up some extra space.'
