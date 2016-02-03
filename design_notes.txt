@@ -1,0 +1,6 @@
+As of Feb 3rd, 2016:
+- Instead of using YAML, use JSON for configuration files.
+- (?) Use NOXCATFS/0.1 Java driver for files?
+  -> Would mean would have to make a utility to easily edit configuration.
+     Maybe just use NOXCATFS for internal files, instead of config?
+
