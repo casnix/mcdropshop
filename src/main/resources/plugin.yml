@@ -1,5 +1,5 @@
 name: mcDropShop
-version: 0.1a
+version: 0.1.0
 description: Open source replacement for HoloShop - bukkit interactive holographic shops
 author: majikchicken
 
@@ -7,6 +7,5 @@ main: io.github.casnix.mcdropshop.Main
 depend: [HolographicDisplays, Vault]
 
 commands:
-  dropshop:
+  mcdropshop:
     description: Manage, create, and delete holoshops
-	aliases: [dshop, dropshops, dshops, mcdropshop, mcdropshops, mcdshop]
