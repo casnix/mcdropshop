@@ -81,26 +81,26 @@ public class Shops {
 			String z;
 			String tmp;
 			JSONObject shopObj;
-			System.out.println("[MDS DBG MSG] shopList.size() = "+shopList.size());
+			//System.out.println("[MDS DBG MSG] shopList.size() = "+shopList.size());
 			for(int index = 0; index < shopList.size(); index++){
-				System.out.println(index);
+				//System.out.println(index);
 				
 				shopObj = (JSONObject) (shopList.get(index));
 				
-				System.out.println(shopObj);
+				//System.out.println(shopObj);
 				shopName = (String) shopObj.get("shopName");
-				System.out.println(shopName);
+				//System.out.println(shopName);
 				world = (String) shopObj.get("world");
-				System.out.println(world);
+				//System.out.println(world);
 				x = (String) shopObj.get("x");
-				System.out.println(x);
+				//System.out.println(x);
 				y = (String) shopObj.get("y");
-				System.out.println(y);
+				//System.out.println(y);
 				z = (String) shopObj.get("z");
-				System.out.println(z);
+				//System.out.println(z);
 				
 				formattedShopList = formattedShopList + "\u00A7a"+shopName+": \u00A7e"+world+","+x+","+y+","+z+"\n";
-				System.out.println(formattedShopList);
+				//System.out.println(formattedShopList);
 			}
 			
 			this.returnStack = (Object) formattedShopList;
@@ -388,9 +388,9 @@ public class Shops {
 			}
 			
 			JSONObject shopObj;
-			System.out.println("[MDS DBG MSG] lS shopList.size() = "+shopList.size());
+			//System.out.println("[MDS DBG MSG] lS shopList.size() = "+shopList.size());
 			for(int index = 0; index < shopList.size(); index++){
-				System.out.println(index);
+				//System.out.println(index);
 				
 				shopObj = (JSONObject) (shopList.get(index));
 				

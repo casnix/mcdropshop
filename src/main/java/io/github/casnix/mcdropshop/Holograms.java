@@ -41,6 +41,9 @@ import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.handler.TouchHandler;
 import com.gmail.filoghost.holographicdisplays.api.line.TouchableLine;
 
+// Vault
+import net.milkbowl.vault.economy.*;
+
 public class Holograms {
 	// Exception lines:
 	public boolean NullListException = false;
@@ -54,7 +57,7 @@ public class Holograms {
 	private TextLine textLine3;
 	private TextLine textLine4;
 	private ItemLine itemLine1;
-	
+	public static Economy econ = Main.economy;
 	// Our handler
 	public final Main plugin;
 		
@@ -63,17 +66,17 @@ public class Holograms {
 	}
 	
 	public void loadShop(JSONObject shopObj, JSONObject jsonObj){
-		System.out.println(shopObj);
+		//System.out.println(shopObj);
 		String shopName = (String) shopObj.get("shopName");
-		System.out.println(shopName);
+		//Sytem.out.println(shopName);
 		String world = (String) shopObj.get("world");
-		System.out.println(world);
+		//System.out.println(world);
 		String x = (String) shopObj.get("x");
-		System.out.println(x);
+//		System.out.println(x);
 		String y = (String) shopObj.get("y");
-		System.out.println(y);
+//		System.out.println(y);
 		String z = (String) shopObj.get("z");
-		System.out.println(z);
+	//	System.out.println(z);
 				
 		JSONObject shopStub = (JSONObject) jsonObj.get(shopName);
 		JSONArray itemList = (JSONArray) shopStub.get("ShopItems");
@@ -122,7 +125,7 @@ public class Holograms {
 		// Touch handlers
 		scrollLeft.setTouchHandler(new TouchHandler() {			
 			public void onTouch(Player player){
-				Bukkit.broadcastMessage("[mcDropShop] scroll left");
+				//Bukkit.broadcastMessage("[mcDropShop] scroll left");
 				
 				Holograms holoClass = getThis();
 				holoClass.moveOffsetLeft();
@@ -142,7 +145,7 @@ public class Holograms {
 				
 		scrollRight.setTouchHandler(new TouchHandler() {
 			public void onTouch(Player player){
-				Bukkit.broadcastMessage("[mcDropShop] scroll right");
+				//Bukkit.broadcastMessage("[mcDropShop] scroll right");
 				
 				Holograms holoClass = getThis();
 				holoClass.moveOffsetRight();
@@ -162,13 +165,63 @@ public class Holograms {
 				
 		textLine4.setTouchHandler(new TouchHandler() {
 			public void onTouch(Player player){
-				Bukkit.broadcastMessage("[mcDropShop] buy/sell");
+				//Bukkit.broadcastMessage("[mcDropShop] buy/sell");
 						
 				// Get data from offset
 				// Check if this item is buy or sell
 						
 				// If buy:
-				// 
+				// Check if player has enough money
+				// Check if there's room in player's inventory
+				// If true, then take the player's money and give items
+				
+				// If sell:
+				// Check if player has the items
+				// If so, then take the items and pay the player
+				
+				Holograms holoClass = getThis();
+				
+				String itemToDisplay = (String) holoClass.itemList.get(holoClass.itemIndex - holoClass.leftOffset);
+				String[] iTD = itemToDisplay.split("[:]+");
+				JSONObject itemData = (JSONObject) holoClass.shopStub.get(itemToDisplay);
+				String amount = (String) itemData.get("amount");
+				String price = (String) itemData.get("price");
+				String buyOrSell = (String) itemData.get("type");
+				
+				if(buyOrSell.equals("buy")){
+					double playerBalance = econ.getBalance(player);
+					
+					if(playerBalance < Double.parseDouble(price)){
+						player.sendMessage("\u00a7cYou don't have enough money to do that!");
+						return;
+					}
+					
+					if(player.getInventory().firstEmpty() == -1){
+						player.sendMessage("\u00a7cYou don't have enough space in your inventory!");
+						return;
+					}
+					
+					// There's both enough money and room, take their money and run!
+					econ.withdrawPlayer(player, Double.parseDouble(price));
+					player.sendMessage("\u00a7a$" + price + " has been taken from your account.");
+					
+					ItemStack boughtItems = new ItemStack(Material.getMaterial(iTD[0]), Integer.parseInt(amount));
+					
+					player.getInventory().addItem(boughtItems);
+				}else{
+					// Player must be holding item in hand
+					String itemInHand = player.getItemInHand().getType().name();
+					int amountInHand = player.getItemInHand().getAmount();
+					
+					if(itemInHand.equals(iTD[0]) && (Integer.parseInt(amount) == amountInHand)){
+						player.getInventory().removeItem(player.getInventory().getItemInHand());
+						econ.depositPlayer(player, Double.parseDouble(price));
+						
+						player.sendMessage("\u00a7a$" + price + " has been deposited in your account.");
+					}else{
+						player.sendMessage("\u00a7cYou aren't holding " + amount + " of " + iTD[0] + "!");
+					}
+				}
 			}
 		});
 	}

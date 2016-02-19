@@ -67,9 +67,9 @@ public class CommandLineExe implements CommandExecutor {
 				}else{
 				
 					String worldName = ((Player) sender).getWorld().getName();
-					double x = ((Player) sender).getLocation().getBlockX();
-					double y = ((Player) sender).getLocation().getBlockY() + 2.5;
-					double z = ((Player) sender).getLocation().getBlockZ();
+					double x = ((Player) sender).getLocation().getX();
+					double y = ((Player) sender).getLocation().getY() + 2.5;
+					double z = ((Player) sender).getLocation().getZ();
 					
 					mcDropShops.addShop(args[1], worldName, Double.toString(x), Double.toString(y), Double.toString(z), (Player) sender);
 					
@@ -133,9 +133,9 @@ public class CommandLineExe implements CommandExecutor {
 					sender.sendMessage("\u00a7aCommand format:");
 					sender.sendMessage("\u00a7a  /mcdropshop move <shopname>");
 				}else{
-					double x = ((Player) sender).getLocation().getBlockX();
-					double y = ((Player) sender).getLocation().getBlockY() + 2.5;
-					double z = ((Player) sender).getLocation().getBlockZ();
+					double x = ((Player) sender).getLocation().getX();
+					double y = ((Player) sender).getLocation().getY() + 2.5;
+					double z = ((Player) sender).getLocation().getZ();
 					
 					mcDropShops.moveShop(args[1], Double.toString(x), Double.toString(y), Double.toString(z), (Player) sender);
 					

@@ -12,6 +12,7 @@ package io.github.casnix.mcdropshop;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 // vault economy
 //import net.milkbowl.vault.economy.Economy;
@@ -21,6 +22,12 @@ import io.github.casnix.mcdropshop.Versioning;
 import io.github.casnix.mcdropshop.CommandLineExe;
 import io.github.casnix.mcdropshop.Holograms;
 import io.github.casnix.mcdropshop.util.configsys.Shops;
+
+//Vault imports
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
+import net.milkbowl.vault.permission.Permission;
 
 // Server enhancement system imports (for future)
 // import io.github.casnix.serveres.ServerES;
@@ -73,6 +80,18 @@ public final class Main extends JavaPlugin{
 			return;
 		}
 		
+		if(!Bukkit.getPluginManager().isPluginEnabled("Vault")){
+			getLogger().severe("[mcDropShop] Vault is not installed or not enabled.");
+			getLogger().severe("[mcDropShop] This plugin will be disabled");
+			this.setEnabled(false);
+			return;
+		}
+		
+		// Vault stuff
+		this.setupPermissions();
+		this.setupChat();
+		this.setupEconomy();
+		
 		// Command handler (/mcdropshop)
 		this.getCommand("mcdropshop").setExecutor(new CommandLineExe(this));
 		
@@ -105,5 +124,40 @@ public final class Main extends JavaPlugin{
 			getLogger().warning("[mcDropShop] onDisable: Caught a NullListException in holo.closeShops()");
 		}
 	}
-	 
+	
+	
+	// Vault!!! Copypasta'd from
+	// dev.bukkit.org/bukkit-plugins/vault/
+	public static Permission permission = null;
+    public static Economy economy = null;
+    public static Chat chat = null;
+
+    private boolean setupPermissions()
+    {
+        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        if (permissionProvider != null) {
+            permission = permissionProvider.getProvider();
+        }
+        return (permission != null);
+    }
+
+    private boolean setupChat()
+    {
+        RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
+        if (chatProvider != null) {
+            chat = chatProvider.getProvider();
+        }
+
+        return (chat != null);
+    }
+
+    private boolean setupEconomy()
+    {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
+    }
 }
