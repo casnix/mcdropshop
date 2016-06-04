@@ -9,6 +9,9 @@ package io.github.casnix.mcdropshop.util.configsys;
 // Java
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileWriter;
@@ -50,6 +53,8 @@ public class Shops {
 	
 	// Variables
 	private Object returnStack = "";
+	
+	public static Map<String, Holograms> shops = new HashMap<String, Holograms>();
 	
 	// final Shops getFormattedShopList()
 	// -- Puts our return value into the this.returnStack
@@ -181,10 +186,7 @@ public class Shops {
 			
 			JSONArray newShopItemList = new JSONArray();
 			
-			newShopItemList.add("BEDROCK:buy");
-			
 			JSONObject SNL = new JSONObject();
-			SNL.put("BEDROCK:buy", shopStub);
 			SNL.put("ShopItems", newShopItemList);
 			
 			jsonObj.put(shopName, SNL);
@@ -269,6 +271,8 @@ public class Shops {
 			
 			shopsJSON.flush();
 			shopsJSON.close();
+			
+			Shops.shops.remove(shopName);
 			
 			player.sendMessage("\u00a7aShop removed!");
 
@@ -394,8 +398,13 @@ public class Shops {
 				
 				shopObj = (JSONObject) (shopList.get(index));
 				
+				if(shopObj == null)
+					continue; // Skip missing indices
+				
 				Holograms holo = new Holograms(this.plugin);
 				holo.loadShop(shopObj, (JSONObject) jsonObj);
+				
+				Shops.shops.put(holo.shopName, holo);
 			}
 		}catch(ParseException e){
 			Bukkit.getLogger().warning("[mcDropShop] Caught ParseException in loadShops(void)");
@@ -532,6 +541,272 @@ public class Shops {
 			e.printStackTrace();
 		}
 		
+		return this;
+	}
+
+	public static boolean checkShopsFile(){
+		File shopsFile = new File("./plugins/mcDropShop/Shops.json");
+		
+		if(!shopsFile.exists())
+			return false;
+		
+		try{
+			String configTable = new String(Files.readAllBytes(Paths.get("./plugins/mcDropShop/Shops.json")));
+			
+			JSONParser parser = new JSONParser();
+			
+			Object obj = parser.parse(configTable);
+			
+			JSONObject jsonObj = (JSONObject) obj;
+			
+			String listVersion = (String)jsonObj.get("listVersion");
+			
+			if(listVersion == null || !listVersion.equals("0.2.0")){
+				// Old version
+				jsonObj.put("listVersion", "0.2.0");
+				
+				// Update Shops.json
+				FileWriter shopsJSON = new FileWriter("./plugins/mcDropShop/Shops.json");
+				
+				shopsJSON.write(jsonObj.toJSONString());
+				
+				shopsJSON.flush();
+				shopsJSON.close();
+			}
+			
+			return true;
+		}catch(Exception e){
+			Bukkit.getLogger().severe("mcDropShop failed on setup check in Shops.json");
+			
+			e.printStackTrace();
+			
+			return false;
+		}
+	}
+
+	public final void tpPlayer(String shopName, Player player){
+		if(!shops.containsKey(shopName)){
+			player.sendMessage("\u00a7eThat shop does not exist!");
+			
+			return;
+		}
+		
+		double x = shops.get(shopName).x;
+		double y = shops.get(shopName).y;
+		double z = shops.get(shopName).z;
+		String world = shops.get(shopName).world;
+		
+		World wurld = Bukkit.getServer().getWorld(world);
+		
+		player.teleport(new Location(wurld, x, y, z));
+	}
+
+	public final Shops delIndex(String shopName, String index, Player player){
+		if(!shops.containsKey(shopName)){
+			player.sendMessage("\u00a7eThat shop does not exist!");
+			
+			return this;
+		}
+		
+		try{
+			String configTable = new String(Files.readAllBytes(Paths.get("./plugins/mcDropShop/Shops.json")));
+			
+			JSONParser parser = new JSONParser();
+			
+			Object obj = parser.parse(configTable);
+			
+			JSONObject jsonObj = (JSONObject) obj;
+
+			JSONObject shopObj = (JSONObject) jsonObj.get(shopName);
+			
+			JSONArray shopItems = (JSONArray) shopObj.get("ShopItems");
+			
+			if(shopItems.size() <= Integer.parseInt(index)){
+				player.sendMessage("\u00a7eThat shop doesn't have an item at index ("+index+")!");
+				
+				return this;
+			}
+			
+			String itemName = (String)shopItems.get(Integer.parseInt(index));
+			
+			shopItems.remove(Integer.parseInt(index));
+			
+			shopObj.put("ShopItems", shopItems);
+			
+			shopObj.remove(itemName);
+			
+			jsonObj.put(shopName, shopObj);
+			
+			// Update Shops.json
+			FileWriter shopsJSON = new FileWriter("./plugins/mcDropShop/Shops.json");
+			
+			shopsJSON.write(jsonObj.toJSONString());
+			
+			shopsJSON.flush();
+			shopsJSON.close();
+			
+			player.sendMessage("\u00a7aShop updated!");
+
+			return this;
+		}catch(ParseException e){
+			Bukkit.getLogger().warning("[mcDropShop] Caught ParseException in delIndex()");
+			e.printStackTrace();
+		}catch(FileNotFoundException e){
+			Bukkit.getLogger().warning("[mcDropShop] Could not find ./plugins/mcDropShop/Shops.json");
+			e.printStackTrace();
+		}catch(IOException e){
+			Bukkit.getLogger().warning("[mcDropShop] Caught IOException in delIndex()");
+			e.printStackTrace();
+		}
+
+		return this;
+	}
+
+	public final Shops repBuy(String shopName, String cost, String index, Player player){
+		if(!shops.containsKey(shopName)){
+			player.sendMessage("\u00a7eThat shop does not exist!");
+			
+			return this;
+		}
+		
+		try{
+			String configTable = new String(Files.readAllBytes(Paths.get("./plugins/mcDropShop/Shops.json")));
+			
+			JSONParser parser = new JSONParser();
+			
+			Object obj = parser.parse(configTable);
+			
+			JSONObject jsonObj = (JSONObject) obj;
+
+			JSONObject shopObj = (JSONObject) jsonObj.get(shopName);
+			
+			JSONArray shopItems = (JSONArray) shopObj.get("ShopItems");
+			
+			if(shopItems.size() <= Integer.parseInt(index)){
+				player.sendMessage("\u00a7eThat shop doesn't have an item at index ("+index+")!");
+				
+				return this;
+			}
+			
+			String itemName = (String)shopItems.get(Integer.parseInt(index));
+			shopObj.remove(itemName);
+			shopItems.remove(Integer.parseInt(index));
+			
+			String newItem = player.getItemInHand().getType().name();
+			
+			Bukkit.getLogger().info("Player \"" + player.getDisplayName() + "\" added " + newItem + " to shop " + shopName);
+			
+			shopItems.add(Integer.parseInt(index), newItem + ":buy");
+			
+			shopObj.put("ShopItems", shopItems);
+			
+			JSONObject itemStub = new JSONObject();
+			itemStub.put("amount", Integer.toString(player.getItemInHand().getAmount()));
+			itemStub.put("price", cost);
+			itemStub.put("type", "buy");
+			
+			shopObj.put(newItem + ":buy", itemStub);
+			
+			shopObj.put("ShopItems", shopItems);
+			
+			jsonObj.put(shopName, shopObj);
+			
+			// Update Shops.json
+			FileWriter shopsJSON = new FileWriter("./plugins/mcDropShop/Shops.json");
+			
+			shopsJSON.write(jsonObj.toJSONString());
+			
+			shopsJSON.flush();
+			shopsJSON.close();
+			
+			player.sendMessage("\u00a7aShop updated!");
+
+			return this;
+		}catch(ParseException e){
+			Bukkit.getLogger().warning("[mcDropShop] Caught ParseException in repBuy()");
+			e.printStackTrace();
+		}catch(FileNotFoundException e){
+			Bukkit.getLogger().warning("[mcDropShop] Could not find ./plugins/mcDropShop/Shops.json");
+			e.printStackTrace();
+		}catch(IOException e){
+			Bukkit.getLogger().warning("[mcDropShop] Caught IOException in repBuy()");
+			e.printStackTrace();
+		}
+
+		return this;
+	}
+
+	public final Shops repSell(String shopName, String cost, String index, Player player){
+		if(!shops.containsKey(shopName)){
+			player.sendMessage("\u00a7eThat shop does not exist!");
+			
+			return this;
+		}
+		
+		try{
+			String configTable = new String(Files.readAllBytes(Paths.get("./plugins/mcDropShop/Shops.json")));
+			
+			JSONParser parser = new JSONParser();
+			
+			Object obj = parser.parse(configTable);
+			
+			JSONObject jsonObj = (JSONObject) obj;
+
+			JSONObject shopObj = (JSONObject) jsonObj.get(shopName);
+			
+			JSONArray shopItems = (JSONArray) shopObj.get("ShopItems");
+			
+			if(shopItems.size() <= Integer.parseInt(index)){
+				player.sendMessage("\u00a7eThat shop doesn't have an item at index ("+index+")!");
+				
+				return this;
+			}
+			
+			String itemName = (String)shopItems.get(Integer.parseInt(index));
+			shopObj.remove(itemName);
+			shopItems.remove(Integer.parseInt(index));
+			
+			String newItem = player.getItemInHand().getType().name();
+			
+			Bukkit.getLogger().info("Player \"" + player.getDisplayName() + "\" added " + newItem + " to shop " + shopName);
+			
+			shopItems.add(Integer.parseInt(index), newItem + ":sell");
+			
+			shopObj.put("ShopItems", shopItems);
+			
+			JSONObject itemStub = new JSONObject();
+			itemStub.put("amount", Integer.toString(player.getItemInHand().getAmount()));
+			itemStub.put("price", cost);
+			itemStub.put("type", "sell");
+			
+			shopObj.put(newItem + ":sell", itemStub);
+			
+			shopObj.put("ShopItems", shopItems);
+			
+			jsonObj.put(shopName, shopObj);
+			
+			// Update Shops.json
+			FileWriter shopsJSON = new FileWriter("./plugins/mcDropShop/Shops.json");
+			
+			shopsJSON.write(jsonObj.toJSONString());
+			
+			shopsJSON.flush();
+			shopsJSON.close();
+			
+			player.sendMessage("\u00a7aShop updated!");
+
+			return this;
+		}catch(ParseException e){
+			Bukkit.getLogger().warning("[mcDropShop] Caught ParseException in repBuy()");
+			e.printStackTrace();
+		}catch(FileNotFoundException e){
+			Bukkit.getLogger().warning("[mcDropShop] Could not find ./plugins/mcDropShop/Shops.json");
+			e.printStackTrace();
+		}catch(IOException e){
+			Bukkit.getLogger().warning("[mcDropShop] Caught IOException in repBuy()");
+			e.printStackTrace();
+		}
+
 		return this;
 	}
 

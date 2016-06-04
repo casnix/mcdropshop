@@ -7,7 +7,7 @@
 package io.github.casnix.mcdropshop.util;
 
 import org.bukkit.entity.Player;
-
+import org.bukkit.command.CommandSender;
 
 public class Screen {
 	public static void sendMultilineMessageToPlayer(Player player, String message){

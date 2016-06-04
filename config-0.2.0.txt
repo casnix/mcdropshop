@@ -1,0 +1,70 @@
+// This is the configuration format template
+// for mcDropShop 0.2.0 by majikchicken
+// <http://github.com/casnix/mcdropshop/>
+
+// Don't uncomment this!
+$(configVersion)=0.2.0
+
+// Stream line color: sets the color for the arrow lines
+// Can be overridden by $(streamLineTextLeft) and $(streamLineTextRight)
+// If you comment out this variable, it will default to §c
+$(streamLineColor)=§c
+
+// Arrow color: sets the color for the arrows
+// Can be overriden by $(arrowRight) and $(arrowLeft)
+// If commented out, will default to §e
+$(arrowColor)=§e
+
+// Text color: sets the color of the text
+// If commented out, will default to §f
+$(textColor)=§f
+
+//-----------------------------------------------------
+// Override variables.
+
+// Sets the text on either side of the nav arrows
+// When commented out, both default to "-----"
+$(streamLineTextLeft)=-----
+$(streamLineTextRight)=-----
+
+// Sets the nav arrows' text
+// When commented out, default to "<<" and ">>" respectively
+$(arrowLeft)=<<
+$(arrowRight)=>>
+
+//------------------------------------------------------
+// Permissions variables (teleport, etc.)
+
+// Allow players to use shops
+$(interact)=mcDropShop.interact
+
+// Sets the shop tp perm for players
+$(tpPermPlayers)=mcDropShop.player.tp
+
+// Let's players do /mcDropShop list
+$(list)=mcDropShop.list
+
+// tp perm for staff
+$(tpPermStaff)=mcDropShop.staff.tp
+
+// Sets the perms for adding, deleting, and moving shops
+$(buildShops)=mcDropShop.staff.build
+
+// Sets the perms for adding selling, buying, replacing, and deleting items
+$(manageShops)=mcDropShop.staff.manage
+
+// Administrator perms
+$(adminPerm)=mcDropShop.admin
+
+//-----------------------------------------------------
+// Master overrides
+
+// Allow or disallow teleporting to shops
+$(allowTeleport)=true
+
+// TP for players, on or off.  Ignores staff perms
+$(playerTeleport)=true
+
+//-----------------------------------------------------
+// Log file path
+$(logPath)=./plugins/mcDropShop/logs
