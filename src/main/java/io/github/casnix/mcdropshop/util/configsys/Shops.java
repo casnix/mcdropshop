@@ -444,7 +444,7 @@ public class Shops {
 			
 			JSONArray shopItems = (JSONArray) shopObj.get("ShopItems");
 			
-			shopItems.add(newItem + ":buy");
+			shopItems.add(newItem + ":buy:"+player.getItemInHand().getDurability());
 			
 			shopObj.put("ShopItems", shopItems);
 			
@@ -452,8 +452,9 @@ public class Shops {
 			itemStub.put("amount", Integer.toString(player.getItemInHand().getAmount()));
 			itemStub.put("price", cost);
 			itemStub.put("type", "buy");
+			itemStub.put("durability", ""+player.getItemInHand().getDurability());
 			
-			shopObj.put(newItem + ":buy", itemStub);
+			shopObj.put(newItem + ":buy:"+player.getItemInHand().getDurability(), itemStub);
 			
 			jsonObj.put(shopName, shopObj);
 			
@@ -506,7 +507,7 @@ public class Shops {
 			
 			JSONArray shopItems = (JSONArray) shopObj.get("ShopItems");
 			
-			shopItems.add(newItem + ":sell");
+			shopItems.add(newItem + ":sell:"+player.getItemInHand().getDurability());
 			
 			shopObj.put("ShopItems", shopItems);
 			
@@ -514,8 +515,9 @@ public class Shops {
 			itemStub.put("amount", Integer.toString(player.getItemInHand().getAmount()));
 			itemStub.put("price", cost);
 			itemStub.put("type", "sell");
+			itemStub.put("durability", ""+player.getItemInHand().getDurability());
 			
-			shopObj.put(newItem + ":sell", itemStub);
+			shopObj.put(newItem + ":sell:"+player.getItemInHand().getDurability(), itemStub);
 			
 			jsonObj.put(shopName, shopObj);
 			
@@ -696,7 +698,7 @@ public class Shops {
 			
 			Bukkit.getLogger().info("Player \"" + player.getDisplayName() + "\" added " + newItem + " to shop " + shopName);
 			
-			shopItems.add(Integer.parseInt(index), newItem + ":buy");
+			shopItems.add(Integer.parseInt(index), newItem + ":buy:"+player.getItemInHand().getDurability());
 			
 			shopObj.put("ShopItems", shopItems);
 			
@@ -704,8 +706,9 @@ public class Shops {
 			itemStub.put("amount", Integer.toString(player.getItemInHand().getAmount()));
 			itemStub.put("price", cost);
 			itemStub.put("type", "buy");
+			itemStub.put("durability", ""+player.getItemInHand().getDurability());
 			
-			shopObj.put(newItem + ":buy", itemStub);
+			shopObj.put(newItem + ":buy:"+player.getItemInHand().getDurability(), itemStub);
 			
 			shopObj.put("ShopItems", shopItems);
 			
@@ -770,7 +773,7 @@ public class Shops {
 			
 			Bukkit.getLogger().info("Player \"" + player.getDisplayName() + "\" added " + newItem + " to shop " + shopName);
 			
-			shopItems.add(Integer.parseInt(index), newItem + ":sell");
+			shopItems.add(Integer.parseInt(index), newItem + ":sell:"+player.getItemInHand().getDurability());
 			
 			shopObj.put("ShopItems", shopItems);
 			
@@ -778,8 +781,9 @@ public class Shops {
 			itemStub.put("amount", Integer.toString(player.getItemInHand().getAmount()));
 			itemStub.put("price", cost);
 			itemStub.put("type", "sell");
+			itemStub.put("durability", ""+player.getItemInHand().getDurability());
 			
-			shopObj.put(newItem + ":sell", itemStub);
+			shopObj.put(newItem + ":sell:"+player.getItemInHand().getDurability(), itemStub);
 			
 			shopObj.put("ShopItems", shopItems);
 			

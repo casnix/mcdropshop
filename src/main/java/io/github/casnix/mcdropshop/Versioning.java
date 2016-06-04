@@ -6,7 +6,7 @@
 package io.github.casnix.mcdropshop;
 
 public class Versioning {
-	private final static String __currentPluginVersion = "0.2.0";
+	private final static String __currentPluginVersion = "0.2.1";
 	
 	public static String CurrentVersion(){
 		String CPV = Versioning.__currentPluginVersion;

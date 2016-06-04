@@ -146,7 +146,9 @@ public class Holograms {
 		String amount = (String) itemData.get("amount");
 		String price = (String) itemData.get("price");
 		String buyOrSell = (String) itemData.get("type");
-				
+		if(itemData.get("durability") == null)
+			itemData.put("durability", "0");
+		short damage = (short) Integer.parseInt((String)itemData.get("durability"));
 				
 		TextLine scrollLeft = hologram.appendTextLine(ConfigSys.variables.get("$(streamLineColor)")
 				+ ConfigSys.variables.get("$(streamLineTextLeft)")
@@ -166,7 +168,7 @@ public class Holograms {
 				+ ConfigSys.variables.get("$(streamLineTextRight)"));
 		
 				
-		ItemLine itemLine1 = hologram.appendItemLine(new ItemStack(Material.getMaterial(iTD[0])));
+		ItemLine itemLine1 = hologram.appendItemLine(new ItemStack(Material.getMaterial(iTD[0]), 1, damage));
 				
 		TextLine textLine4 = hologram.appendTextLine(ConfigSys.variables.get("$(textColor)")
 				+ "[" + buyOrSell + "]");
@@ -197,12 +199,15 @@ public class Holograms {
 				String amount = (String) itemData.get("amount");
 				String price = (String) itemData.get("price");
 				String buyOrSell = (String) itemData.get("type");
+				if(itemData.get("durability") == null)
+					itemData.put("durability", "0");
+				short damage = (short) Integer.parseInt((String)itemData.get("durability"));
 						
 				holoClass.textLine3.setText(ConfigSys.variables.get("$(textColor)")
 						+ "(" + iIdx + ") " + amount + "x - $" + price);
 				holoClass.textLine4.setText(ConfigSys.variables.get("$(textColor)")
 						+ "[" + buyOrSell + "]");
-				holoClass.itemLine1.setItemStack(new ItemStack(Material.getMaterial(iTD[0])));
+				holoClass.itemLine1.setItemStack(new ItemStack(Material.getMaterial(iTD[0]), 1, damage));
 			}
 		});
 				
@@ -224,12 +229,15 @@ public class Holograms {
 				String amount = (String) itemData.get("amount");
 				String price = (String) itemData.get("price");
 				String buyOrSell = (String) itemData.get("type");
+				if(itemData.get("durability") == null)
+					itemData.put("durability", "0");
+				short damage = (short) Integer.parseInt((String)itemData.get("durability"));
 						
 				holoClass.textLine3.setText(ConfigSys.variables.get("$(textColor)")
 						+ "(" + iIdx + ") " + amount + "x - $" + price);
 				holoClass.textLine4.setText(ConfigSys.variables.get("$(textColor)")
 						+ "[" + buyOrSell + "]");
-				holoClass.itemLine1.setItemStack(new ItemStack(Material.getMaterial(iTD[0])));
+				holoClass.itemLine1.setItemStack(new ItemStack(Material.getMaterial(iTD[0]), 1, damage));
 			}
 		});
 				
@@ -262,6 +270,9 @@ public class Holograms {
 				String amount = (String) itemData.get("amount");
 				String price = (String) itemData.get("price");
 				String buyOrSell = (String) itemData.get("type");
+				if(itemData.get("durability") == null)
+					itemData.put("durability", "0");
+				short damage = (short) Integer.parseInt((String)itemData.get("durability"));
 				
 				if(buyOrSell.equals("buy")){
 					double playerBalance = econ.getBalance(player);
@@ -280,7 +291,7 @@ public class Holograms {
 					econ.withdrawPlayer(player, Double.parseDouble(price));
 					player.sendMessage("\u00a7a$" + price + " has been taken from your account.");
 					
-					ItemStack boughtItems = new ItemStack(Material.getMaterial(iTD[0]), Integer.parseInt(amount));
+					ItemStack boughtItems = new ItemStack(Material.getMaterial(iTD[0]), Integer.parseInt(amount), damage);
 					
 					player.getInventory().addItem(boughtItems);
 				}else{
@@ -288,13 +299,15 @@ public class Holograms {
 					String itemInHand = player.getItemInHand().getType().name();
 					int amountInHand = player.getItemInHand().getAmount();
 					
-					if(itemInHand.equals(iTD[0]) && (Integer.parseInt(amount) == amountInHand)){
+					if(itemInHand.equals(iTD[0])
+							&& (Integer.parseInt(amount) == amountInHand)
+							&& player.getItemInHand().getDurability() == damage){
 						player.getInventory().removeItem(player.getInventory().getItemInHand());
 						econ.depositPlayer(player, Double.parseDouble(price));
 						
 						player.sendMessage("\u00a7a$" + price + " has been deposited in your account.");
 					}else{
-						player.sendMessage("\u00a7cYou aren't holding " + amount + " of " + iTD[0] + "!");
+						player.sendMessage("\u00a7cYou aren't holding " + amount + " of " + iTD[0] + ":" + damage +"!");
 					}
 				}
 			}
