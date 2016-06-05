@@ -300,7 +300,7 @@ public class Holograms {
 					int amountInHand = player.getItemInHand().getAmount();
 					
 					if(itemInHand.equals(iTD[0])
-							&& (Integer.parseInt(amount) == amountInHand)
+							&& (Integer.parseInt(amount) <= amountInHand)
 							&& player.getItemInHand().getDurability() == damage){
 						player.getInventory().removeItem(player.getInventory().getItemInHand());
 						econ.depositPlayer(player, Double.parseDouble(price));
